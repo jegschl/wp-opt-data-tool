@@ -2,3 +2,156 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+ .wodt-admin-header .fa-plus-circle{
+    color: green;
+    font-size: 20px ;
+}
+
+.wodt-admin-header .fa-minus-circle{
+    color: red;
+    font-size: 20px ;
+}
+
+.wodt-admin-header .fas{
+    margin-right: 6px;
+}
+
+.action-wrapper{
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.wodt-admin-header{
+    display: flex;
+    justify-content: flex-start;
+}
+
+.fields-wrapper{
+    display:flex;
+    justify-content: space-between;
+}
+
+.actions-wrapper{
+    display: flex;
+    justify-content: flex-start;
+}
+
+.wodt-admin-header{
+    margin-bottom: 12px;
+}
+
+.display.dataTable{
+    margin-top: 12px;
+}
+
+/* Estilos para datatable */
+#main-container{
+width: 100%;
+display: flex;
+justify-content: center;	
+}
+
+table{
+background-color: white;
+text-align: left;
+border-collapse: collapse;
+width: 100%;
+}
+
+.th, .td{
+padding: 20px;
+}
+
+.thead{
+background-color: #246355;
+border-bottom: solid 5px #0F362D;
+color: white;
+}
+
+.tr:nth-child(even){
+background-color: #ddd;
+}
+
+.tr:hover .td{
+background-color: #369681;
+color: white;
+}
+            
+.dataTables_paginate, .paging_simple_numbers{
+display: flex;
+justify-content: end;
+gap: 2rem;
+}
+            
+.dataTables_wrapper{
+display: flex;
+justify-content: space-between;
+flex-wrap: wrap;
+margin: 0 0 1rem 0px;
+}	
+            
+            
+#tabla_next, #tabla_previous{
+position: relative !important;
+display: block !important;
+color: #0d6efd !important;
+text-decoration: none !important;
+background-color: #fff !important;
+border: 1px solid #dee2e6 !important;
+transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out !important;
+
+text-align: center !important;
+padding: 8px !important;
+border-radius: 8px !important;
+}
+
+#wodt-data-tbl{
+    padding-right: 20px;
+}
+
+.display.dataTable{
+    margin-top: 12px;
+}
+/* fin de los estilos para el datatable */
+
+.wodt-plus-options-actions{
+    margin-top: 20px;
+}
+
+.display.dataTable .actions > div{
+    display: inline-block;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.action.remove-wodt{
+    color: red;
+}
+
+.dtHidden{
+    display: none !important;
+    visibility: hidden !important;
+}
+
+.wodt-admin-main-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.wodt-departures-wrapper, .wodt-arrives-wrapper {
+    width: 45%;
+    border: lightgray solid 1px;
+    padding: 7px;
+    border-radius: 5px;
+}
+
+.wodt-costs-wrapper{
+    border: lightgray solid 1px;
+    padding: 7px;
+    border-radius: 5px;
+    margin-top: 30px;
+}
+   

@@ -157,6 +157,10 @@ class Wp_Opt_Data_Tool {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'wodt_menu' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'wodt_settings_init' );
+		$this->loader->add_action( 'rest_api_init', $plugin_admin,'set_endpoints');
+		$this->loader->add_action( 'script_loader_tag', $plugin_admin, 'script_loader_tag',10,2);
 	}
 
 	/**
