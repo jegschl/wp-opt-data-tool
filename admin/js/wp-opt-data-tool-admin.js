@@ -3,6 +3,8 @@ var departure_editor_mode = null; // 0:add , 1:edition
 
 var dttbl_costs = null;
 var cost_editor_mode = null;
+var currentCostOrigenDsc = '';
+var currentCostDestinDsc = '';
 
 var arrive_editor_mode = null;
 var dttbl_arrives = null;
@@ -107,7 +109,8 @@ function actions_data_render(data, type){
 		} );	
 
 		function resetWodtAddCostFields(){
-			$( '#wodt_costo' ).val('');
+			if( cost_editor_mode == 0)
+				$( '#wodt_costo' ).val('');
 		}
 
 		function onDepartureLoadForSelectSuccess(data,  textStatus,  jqXHR){
@@ -116,12 +119,23 @@ function actions_data_render(data, type){
 			let i=0;
 			let id='';
 			let dsc='';
+			
+			let optionStr = '';
 			$('#wodt_origen').find('option').remove();
 			$('#wodt_origen').append('<option value="">Comuna lo localidad de origen</option>');
 			for(i=0;i<data.data.length;i++){
 				id  = data.data[i].DT_RowId.split('-')[1];
-				dsc = data.data[i].departure;
-				$('#wodt_origen').append($("<option></option>")
+				dsc = data.data[i].departure;				
+
+				if(cost_editor_mode == 1){
+					if( data.data[i].departure == currentCostOrigenDsc ){
+						optionStr = "<option selected></option>";
+					} else {
+						optionStr = "<option></option>";
+					}
+				} else { optionStr = "<option></option>"; }
+
+				$('#wodt_origen').append($(optionStr)
                     .attr("value", id)
                     .text(dsc)); 
 			}
@@ -162,12 +176,22 @@ function actions_data_render(data, type){
 			let i=0;
 			let id='';
 			let dsc='';
+			let optionStr = '';
 			$('#wodt_destino').find('option').remove();
 			$('#wodt_destino').append('<option value="">Comuna o localidad de destino</option>');
 			for(i=0;i<data.data.length;i++){
 				id  = data.data[i].DT_RowId.split('-')[1];
 				dsc = data.data[i].arrive;
-				$('#wodt_destino').append($("<option></option>")
+
+				if(cost_editor_mode == 1){
+					if( data.data[i].arrive == currentCostDestinDsc ){
+						optionStr = "<option selected></option>";
+					} else {
+						optionStr = "<option></option>";
+					}
+				} else { optionStr = "<option></option>"; }
+
+				$('#wodt_destino').append($(optionStr)
                     .attr("value", id)
                     .text(dsc)); 
 			}
@@ -285,8 +309,10 @@ function actions_data_render(data, type){
 				console.log(dpr);
 				for(i=0; dpr.length; i++){
 					if( dpr[i].DT_RowId.split('-')[1] == id ){
-						$('#wodt_cost').val(dpr[i].cost);
-						$('#wodt_cost_id').val(id);
+						$('#wodt_costo').val(dpr[i].cost);
+						$('#wodt_costo_id').val(id);
+						currentCostOrigenDsc = dpr[i].departure;
+						currentCostDestinDsc = dpr[i].arrive;
 						break;
 					}
 				}
@@ -338,8 +364,8 @@ function actions_data_render(data, type){
 					wodtCostNewData = {
 						'departure_id': $('#wodt_origen').val(),
 						'arrive_id':	$('#wodt_destino').val(),
-						'cost': $('#wodt_cost').val(),
-						'cost_id': $('#wodt_cost_id').val()
+						'cost': $('#wodt_costo').val(),
+						'cost_id': $('#wodt_costo_id').val()
 					};
 					ajxUrl = wodt_config.urlUpdCost;
 					ajxMthd = 'PUT';
