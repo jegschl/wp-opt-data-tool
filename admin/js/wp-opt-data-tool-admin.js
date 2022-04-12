@@ -107,7 +107,7 @@ function actions_data_render(data, type){
 		} );	
 
 		function resetWodtAddCostFields(){
-			$( '#wodt_cost' ).val('');
+			$( '#wodt_costo' ).val('');
 		}
 
 		function onDepartureLoadForSelectSuccess(data,  textStatus,  jqXHR){
@@ -328,7 +328,7 @@ function actions_data_render(data, type){
 					wodtCostNewData = {
 						'departure_id': $('#wodt_origen').val(),
 						'arrive_id':	$('#wodt_destino').val(),
-						'cost': 		$('#wodt_cost').val()
+						'cost': 		$('#wodt_costo').val()
 					};
 					ajxUrl = wodt_config.urlAddCost;
 					ajxMthd = 'POST';

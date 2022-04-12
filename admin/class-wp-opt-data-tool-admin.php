@@ -993,7 +993,6 @@ class Wp_Opt_Data_Tool_Admin {
 				INNER JOIN wp_wodt_arrives wwa
 					ON wwa.id = wdso.arrive_id
 				$where 
-				ORDER BY wwd.departure wwa.arrive
 				$limit";
 		$qry = 'SELECT FOUND_ROWS() AS total_rcds';
 		
@@ -1094,8 +1093,8 @@ class Wp_Opt_Data_Tool_Admin {
 		// verificando si ya existe un costo con los mismos valores.
 		$isql = "SELECT cost FROM $tbl_nm_costs
 				 WHERE cost = " . intval($data['cost']) . "
-					  OR departure_id = " . intval($data['departure_id']) . "
-					  OR arrive_id = ". intval($data['arrive_id']);
+					  AND departure_id = " . intval($data['departure_id']) . "
+					  AND arrive_id = ". intval($data['arrive_id']);
 		$qr = $wpdb->get_results($isql,OBJECT);
 		if(count($qr)>0){
 			return [
