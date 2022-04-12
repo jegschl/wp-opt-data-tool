@@ -95,9 +95,28 @@ class Wp_Opt_Data_Tool_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
+		$wodt_front_config = array(
+			'selectHtmlId' => apply_filters('wodt/front/selectId','#departures-locations'),
+			'urlGetCosts'		 => rest_url( '/'. WODT_APIREST_BASE_ROUTE_COSTS .WODT_URI_ID_GET_ODT_SETS . '/' ),
+			'parentHtmlId'		=> apply_filters('wodt/front/selecParentEl','#wpcf7-f4527-p4466-o1'),
+			'costHtmlId'	=> apply_filters('wodt/front/costEl','#costo-almacenado')
+		);
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp-opt-data-tool-public.js', array( 'jquery' ), $this->version, false );
-
+		wp_localize_script(
+			$this->plugin_name,
+			'wodt_front_config',
+			$wodt_front_config
+		);
+		$script_fl = plugin_dir_url( __FILE__ );
+		$script_fl = $script_fl . 'js/libs/jq-blockui/jq-block-ui-2.70.0.js';
+		wp_enqueue_script(
+			'jq-blockui', 
+			$script_fl,
+			array('jquery'),
+			'2.70.0',
+			true
+		);
 	}
 
 	//add_action( 'rest_api_init', 'emp_set_endpoints');
@@ -118,5 +137,74 @@ class Wp_Opt_Data_Tool_Public {
 
         
     }
+
+	public function send_wodt_costs($r){
+		global $wpdb;
+		
+		$limit = '';
+		if(isset($_GET['length']) && $_GET['length']>0)
+            $limit = ' LIMIT ' . $_GET['start'] . ',' . $_GET['length'];
+        
+		$where = '';
+        if(isset($_GET['search']) && !empty($_GET['search'])){
+            $sv = $_GET['search']['value'];
+            $where  = ' WHERE 
+							wwd.departure LIKE "%'. $sv . '%"
+							OR wwa.arrive LIKE "%'. $sv . '%"';
+        }
+
+		$isql = "SELECT 
+					wdso.id,
+					wwd.departure AS departure,
+					wwa.arrive AS arrive,
+					cost
+				FROM wp_wodt_costs wdso 
+				INNER JOIN wp_wodt_departures wwd
+					ON wwd.id = wdso.departure_id
+				INNER JOIN wp_wodt_arrives wwa
+					ON wwa.id = wdso.arrive_id
+				$where 
+				$limit";
+		$qry = 'SELECT FOUND_ROWS() AS total_rcds';
+		
+		$sos = $wpdb->get_results($isql, OBJECT);
+		$frs = $wpdb->get_row($qry, OBJECT);
+        
+		$rc = array();
+        
+        foreach($sos as $c){
+            $rc[] = array(
+				'DT_RowId'	  => 'cost-'.$c->id,
+				'departure'	  => $c->departure,
+				'arrive'	  => $c->arrive,
+				'cost'	  	  => $c->cost,
+				'selection'	  => '',
+				'actions'	  => ''
+            );
+        }
+
+        if($sos && empty($wpdb->last_error) ){
+            $res = array(
+                'draw' => $_GET['draw'],
+                "recordsTotal" =>  intval($frs->total_rcds),
+                "recordsFiltered" => intval($frs->total_rcds),
+                'data' => $rc
+            );
+            $response = new WP_REST_Response( $res );
+            $response->set_status( 200 );
+            
+        } else {
+			$res = array(
+                'draw' => $_GET['draw'],
+                "recordsTotal" =>  intval($frs->total_rcds),
+                "recordsFiltered" => intval($frs->total_rcds),
+                'data' => array(),
+				//'error' => new WP_Error( 'cant-read-dosf-sos', __( 'Can\'t get shared objects', 'wp-dosf' ), array( 'status' => 500 ) )
+            );
+            $response = new WP_REST_Response( $res );
+            $response->set_status( 200 );
+        }
+        return $response;
+	}
 
 }
