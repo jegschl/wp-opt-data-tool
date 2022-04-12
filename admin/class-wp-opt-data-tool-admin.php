@@ -167,7 +167,7 @@ class Wp_Opt_Data_Tool_Admin {
 	public function wodt_menu() {
 		add_menu_page( 
 			'distancias y valores', 
-			'distancias y valores', 
+			'Distancias y Valores', 
 			'manage_options', 
 			'wodt-admin',  //'wodt/wodt-admin.php', 
 			array($this,'wodt_admin_page'), 
