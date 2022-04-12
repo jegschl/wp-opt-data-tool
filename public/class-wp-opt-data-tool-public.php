@@ -99,7 +99,7 @@ class Wp_Opt_Data_Tool_Public {
 			'selectHtmlId' => apply_filters('wodt/front/selectId','.departures-locations'),
 			'urlGetCosts'		 => rest_url( '/'. WODT_APIREST_BASE_ROUTE_COSTS .WODT_URI_ID_GET_ODT_SETS . '/' ),
 			'parentHtmlId'		=> apply_filters('wodt/front/selecParentEl','#wpcf7-f4527-p4466-o1'),
-			'costHtmlId'	=> apply_filters('wodt/front/costEl','.front-costo')
+			'costHtmlId'	=> apply_filters('wodt/front/costEl','.front-costo-ip')
 		);
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp-opt-data-tool-public.js', array( 'jquery' ), $this->version, false );

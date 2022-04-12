@@ -37,6 +37,7 @@
 			let i = 0;
 			let costoFormateado = '';
 			let costoE = null;
+			const costoESelector = wodt_front_config.costHtmlId;
 			var formatter = new Intl.NumberFormat('es-CL', {
 				style: 'currency',
 				currency: 'CLP',
@@ -45,7 +46,7 @@
 				//minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
 				//maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
 			});
-			costoE = $(this).parent().parent().parent().parent().find('.front-costo');
+			costoE = $(this).parent().parent().parent().parent().find(costoESelector);
 			if(costoE.length>0){
 				for(i=0; i<departuresData.length; i++){
 					if(departuresData[i].departure == $(this).val()){
