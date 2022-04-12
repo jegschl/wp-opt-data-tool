@@ -100,4 +100,23 @@ class Wp_Opt_Data_Tool_Public {
 
 	}
 
+	//add_action( 'rest_api_init', 'emp_set_endpoints');
+    public function set_endpoints(){
+
+		register_rest_route(
+            WODT_APIREST_BASE_ROUTE_COSTS,
+            '/'. WODT_URI_ID_GET_ODT_SETS . '/',
+            array(
+                'methods'  => 'GET',
+                'callback' => array(
+                    $this,
+                    'send_wodt_costs'
+                ),
+                'permission_callback' => '__return_true'
+            )
+        );
+
+        
+    }
+
 }
