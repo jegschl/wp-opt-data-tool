@@ -66,7 +66,7 @@
 			departuresData = data.data;
 			selectE.each(function(j,e){
 				$(e).find('option').remove();
-				$(e).append('<option value="">Selecciona una localidad</option>');
+				$(e).append('<option value="">Selecciona una comuna</option>');
 				for(i=0;i<departuresData.length;i++){
 					id  = departuresData[i].DT_RowId.split('-')[1];
 					dsc = departuresData[i].departure;
