@@ -615,7 +615,7 @@ class Wp_Opt_Data_Tool_Admin {
 
         if($sos && empty($wpdb->last_error) ){
             $res = array(
-                'draw' => $_GET['draw'],
+                'draw' => isset($_GET['draw'])?$_GET['draw']:'',
                 "recordsTotal" =>  intval($frs->total_rcds),
                 "recordsFiltered" => intval($frs->total_rcds),
                 'data' => $rc
@@ -625,7 +625,7 @@ class Wp_Opt_Data_Tool_Admin {
             
         } else {
 			$res = array(
-                'draw' => $_GET['draw'],
+                'draw' => isset($_GET['draw'])?$_GET['draw']:'',
                 "recordsTotal" =>  intval($frs->total_rcds),
                 "recordsFiltered" => intval($frs->total_rcds),
                 'data' => array(),
@@ -809,7 +809,7 @@ class Wp_Opt_Data_Tool_Admin {
 
         if($sos && empty($wpdb->last_error) ){
             $res = array(
-                'draw' => $_GET['draw'],
+                'draw' => isset($_GET['draw'])?$_GET['draw']:'',
                 "recordsTotal" =>  intval($frs->total_rcds),
                 "recordsFiltered" => intval($frs->total_rcds),
                 'data' => $rc
@@ -819,7 +819,7 @@ class Wp_Opt_Data_Tool_Admin {
             
         } else {
 			$res = array(
-                'draw' => $_GET['draw'],
+                'draw' => isset($_GET['draw'])?$_GET['draw']:'',
                 "recordsTotal" =>  intval($frs->total_rcds),
                 "recordsFiltered" => intval($frs->total_rcds),
                 'data' => array(),
@@ -1014,7 +1014,7 @@ class Wp_Opt_Data_Tool_Admin {
 
         if($sos && empty($wpdb->last_error) ){
             $res = array(
-                'draw' => $_GET['draw'],
+                'draw' => isset($_GET['draw'])?$_GET['draw']:'',
                 "recordsTotal" =>  intval($frs->total_rcds),
                 "recordsFiltered" => intval($frs->total_rcds),
                 'data' => $rc
@@ -1024,7 +1024,7 @@ class Wp_Opt_Data_Tool_Admin {
             
         } else {
 			$res = array(
-                'draw' => $_GET['draw'],
+                'draw' => isset($_GET['draw'])?$_GET['draw']:'',
                 "recordsTotal" =>  intval($frs->total_rcds),
                 "recordsFiltered" => intval($frs->total_rcds),
                 'data' => array(),
