@@ -590,7 +590,7 @@ class Wp_Opt_Data_Tool_Admin {
             $where  = ' WHERE departure LIKE "%'. $sv . '%"';
         }
 
-		$isql = "SELECT 
+		$isql = "SELECT SQL_CALC_FOUND_ROWS
 					wdso.id,
 					departure
 				FROM wp_wodt_departures wdso 
@@ -784,7 +784,7 @@ class Wp_Opt_Data_Tool_Admin {
             $where  = ' WHERE arrive LIKE "%'. $sv . '%"';
         }
 
-		$isql = "SELECT 
+		$isql = "SELECT SQL_CALC_FOUND_ROWS
 					wdso.id,
 					arrive
 				FROM wp_wodt_arrives wdso 
@@ -982,7 +982,7 @@ class Wp_Opt_Data_Tool_Admin {
 							OR wwa.arrive LIKE "%'. $sv . '%"';
         }
 
-		$isql = "SELECT 
+		$isql = "SELECT SQL_CALC_FOUND_ROWS
 					wdso.id,
 					wwd.departure AS departure,
 					wwa.arrive AS arrive,
