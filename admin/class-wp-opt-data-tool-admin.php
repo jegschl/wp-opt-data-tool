@@ -144,7 +144,16 @@ class Wp_Opt_Data_Tool_Admin {
 			false
 		);
 
-
+		$script_fl = plugin_dir_url( __FILE__ );
+		$script_fl = substr($script_fl,0,strpos($script_fl,'/admin'));
+		$script_fl = $script_fl . '/public/js/libs/jq-blockui/jq-block-ui-2.70.0.js';
+		wp_enqueue_script(
+			'jq-blockui', 
+			$script_fl,
+			array('jquery'),
+			'2.70.0',
+			true
+		);
 	}
 
 	//add_filter( 'script_loader_tag', 'my_script_loader_tag', 10 ,2 );
@@ -346,14 +355,14 @@ class Wp_Opt_Data_Tool_Admin {
 			<div class="wodt-admin-add-so" style="display: none;">
 				<div class="fields-wrapper">
 					<input type="hidden" val="" id="wodt_costo_id">
-					<div class="fld-so">
+					<div id="wodt_origen_wrapper" class="fld-so">
 						<label>Seleccionar origen</label>
 						<select id="wodt_origen" name="wodt_origen">
 							<option val="">Seleccione una comuna o localidad de origen</option>
 						</select>
 						<input type='hidden' name='wodt_origent_id' id='wodt_origen_id' value='' />
 					</div>
-					<div class="fld-so">
+					<div id="wodt_destino_wrapper" class="fld-so">
 						<label>Seleccionar destino</label>
 						<select id="wodt_destino" name="wodt_destino">
 							<option val="">Seleccione una comuna o localidad de destino</option>
@@ -1035,11 +1044,43 @@ class Wp_Opt_Data_Tool_Admin {
 			return [
 				'wodtAddNew_post_status' => 'error',
 				'error_id' 				 => 1,
-				'erro_msg'				 => 'Locación de destino vacía'
+				'erro_msg'				 => 'Costo vacío'
 			];
 		}
 
 		if(empty($data['cost'])){
+			return [
+				'wodtAddNew_post_status' => 'error',
+				'error_id' 				 => 1,
+				'erro_msg'				 => 'Costo vacío'
+			];
+		}
+
+		if(!isset($data['departure_id'])){
+			return [
+				'wodtAddNew_post_status' => 'error',
+				'error_id' 				 => 1,
+				'erro_msg'				 => 'Locación de origen vacía'
+			];
+		}
+
+		if(empty($data['departure_id'])){
+			return [
+				'wodtAddNew_post_status' => 'error',
+				'error_id' 				 => 1,
+				'erro_msg'				 => 'Locación de origen vacía'
+			];
+		}
+
+		if(!isset($data['arrive_id'])){
+			return [
+				'wodtAddNew_post_status' => 'error',
+				'error_id' 				 => 1,
+				'erro_msg'				 => 'Locación de destino vacía'
+			];
+		}
+
+		if(empty($data['arrive_id'])){
 			return [
 				'wodtAddNew_post_status' => 'error',
 				'error_id' 				 => 1,
@@ -1050,22 +1091,26 @@ class Wp_Opt_Data_Tool_Admin {
 		global $wpdb;
 		$tbl_nm_costs = $wpdb->prefix . 'wodt_costs';
 
-		// verificando si ya existe una locación con el mismo nombre (case insensitive).
+		// verificando si ya existe un costo con los mismos valores.
 		$isql = "SELECT cost FROM $tbl_nm_costs
-				WHERE LOWER(cost) = LOWER('" . $data['cost'] . "')";
+				 WHERE cost = " . intval($data['cost']) . "
+					  OR departure_id = " . intval($data['departure_id']) . "
+					  OR arrive_id = ". intval($data['arrive_id']);
 		$qr = $wpdb->get_results($isql,OBJECT);
 		if(count($qr)>0){
 			return [
 				'wodtAddNew_post_status' => 'error',
 				'error_id' 				 => 2,
-				'erro_msg'				 => 'Locación de destino ya existe'
+				'erro_msg'				 => 'Costo ya existe'
 			];
 		}
 
 		$wpdb->insert(
 			$tbl_nm_costs,
 			array(
-				'cost' 		 => $data['cost']
+				'cost' 		 	=> intval($data['cost']),
+				'departure_id'	=> intval($data['departure_id']),
+				'arrive_id'		=> intval($data['arrive_id'])
 			)
 		);
 
@@ -1077,33 +1122,49 @@ class Wp_Opt_Data_Tool_Admin {
 		// validaciones del lado del server.
 		if(!isset($data['cost'])){
 			return [
-				'wodtUpdate_put_status' => 'error',
+				'wodtAddNew_post_status' => 'error',
 				'error_id' 				 => 1,
-				'erro_msg'				 => 'Locación de destino vacía'
+				'erro_msg'				 => 'Costo vacío'
 			];
 		}
 
 		if(empty($data['cost'])){
 			return [
-				'wodtUpdate_put_status' => 'error',
+				'wodtAddNew_post_status' => 'error',
+				'error_id' 				 => 1,
+				'erro_msg'				 => 'Costo vacío'
+			];
+		}
+
+		if(!isset($data['departure_id'])){
+			return [
+				'wodtAddNew_post_status' => 'error',
+				'error_id' 				 => 1,
+				'erro_msg'				 => 'Locación de origen vacía'
+			];
+		}
+
+		if(empty($data['departure_id'])){
+			return [
+				'wodtAddNew_post_status' => 'error',
+				'error_id' 				 => 1,
+				'erro_msg'				 => 'Locación de origen vacía'
+			];
+		}
+
+		if(!isset($data['arrive_id'])){
+			return [
+				'wodtAddNew_post_status' => 'error',
 				'error_id' 				 => 1,
 				'erro_msg'				 => 'Locación de destino vacía'
 			];
 		}
 
-		if(!isset($data['cost_id'])){
+		if(empty($data['arrive_id'])){
 			return [
-				'wodtUpdate_put_status' => 'error',
-				'error_id' 				 => 2,
-				'erro_msg'				 => 'Id de locación de destino vacía'
-			];
-		}
-
-		if(empty($data['cost_id'])){
-			return [
-				'wodtUpdate_put_status' => 'error',
-				'error_id' 				 => 2,
-				'erro_msg'				 => 'Id de locación de destino vacía'
+				'wodtAddNew_post_status' => 'error',
+				'error_id' 				 => 1,
+				'erro_msg'				 => 'Locación de destino vacía'
 			];
 		}
 
@@ -1115,7 +1176,9 @@ class Wp_Opt_Data_Tool_Admin {
 		$wpdb->update(
 			$tbl_nm_costs,
 			array(
-				'cost' => $data['cost']
+				'departure_id'	=> intval($data['departure_id']),
+				'arrive_id'		=> intval($data['arrive_id']),
+				'cost' 			=> intval($data['cost'])
 			),
 			array(
 				'id'		=> $data['cost_id']
@@ -1134,7 +1197,7 @@ class Wp_Opt_Data_Tool_Admin {
 			return [
 				'wodtRemove_del_status' => 'error',
 				'error_id' 				 => 2,
-				'erro_msg'				 => 'Id de locación de destino vacía'
+				'erro_msg'				 => 'Id de costo vacío'
 			];
 		}
 
@@ -1142,7 +1205,7 @@ class Wp_Opt_Data_Tool_Admin {
 			return [
 				'wodtRemove_del_status' => 'error',
 				'error_id' 				 => 2,
-				'erro_msg'				 => 'Id de locación de destino vacía'
+				'erro_msg'				 => 'Id de costo vacío'
 			];
 		}
 

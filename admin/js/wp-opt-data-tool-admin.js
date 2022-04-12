@@ -113,6 +113,18 @@ function actions_data_render(data, type){
 		function onDepartureLoadForSelectSuccess(data,  textStatus,  jqXHR){
 			console.log('Datos para rellenar el select de localidaddes de origen:');
 			console.log(data);
+			let i=0;
+			let id='';
+			let dsc='';
+			$('#wodt_origen').find('option').remove();
+			$('#wodt_origen').append('<option value="">Comuna lo localidad de origen</option>');
+			for(i=0;i<data.data.length;i++){
+				id  = data.data[i].DT_RowId.split('-')[1];
+				dsc = data.data[i].departure;
+				$('#wodt_origen').append($("<option></option>")
+                    .attr("value", id)
+                    .text(dsc)); 
+			}
 		}
 
 		function onDepartureLoadForSelectError(jqXHR, textStatus, errorThrown){
@@ -122,10 +134,17 @@ function actions_data_render(data, type){
 		}
 
 		function onDepartureLoadForSelectComplete(jqXHR, textStatus){
-			
+			$('#wodt_origen_wrapper').unblock();
 		}
 
 		function loadDeparturesOnSelect(){
+			$('#wodt_origen_wrapper').block({ 
+				message: '<h4>Cargando localidades de origen</h4>',
+                css: { 
+					width: "60%",
+					border: '1px solid #a00' 
+				} 
+            });
 			const ajxSettings = {
 				url: wodt_config.urlGetDepartures,
 				method: 'GET',
@@ -137,12 +156,59 @@ function actions_data_render(data, type){
 			$.ajax(ajxSettings);
 		}
 
+		function onArriveLoadForSelectSuccess(data,  textStatus,  jqXHR){
+			console.log('Datos para rellenar el select de localidaddes de destino:');
+			console.log(data);
+			let i=0;
+			let id='';
+			let dsc='';
+			$('#wodt_destino').find('option').remove();
+			$('#wodt_destino').append('<option value="">Comuna o localidad de destino</option>');
+			for(i=0;i<data.data.length;i++){
+				id  = data.data[i].DT_RowId.split('-')[1];
+				dsc = data.data[i].arrive;
+				$('#wodt_destino').append($("<option></option>")
+                    .attr("value", id)
+                    .text(dsc)); 
+			}
+		}
+
+		function onArriveLoadForSelectError(jqXHR, textStatus, errorThrown){
+			console.log('Error obteniendo datos para select de localidades de destino.');
+			console.log('El error fué el siguiente:');
+			console.log(jqXHR);
+		}
+
+		function onArriveLoadForSelectComplete(jqXHR, textStatus){
+			$('#wodt_destino_wrapper').unblock();
+		}
+
+		function loadArrivesOnSelect(){
+			$('#wodt_destino_wrapper').block({ 
+				message: '<h4>Cargando localidades de destino</h4>',
+                css: { 
+					width: "60%",
+					border: '1px solid #a00' 
+				} 
+            });
+			const ajxSettings = {
+				url: wodt_config.urlGetArrives,
+				method: 'GET',
+				success: onArriveLoadForSelectSuccess,
+				error: onArriveLoadForSelectError,
+				complete: onArriveLoadForSelectComplete
+			}
+
+			$.ajax(ajxSettings);
+		}
+
 		function setWidgetsForWodtCostAddNew(){
 			$(addWrapper + '.wodt-admin-header').hide();
 			$(dttblId + '_wrapper').addClass('dtHidden');
 			resetWodtAddCostFields();
 			$(addWrapper + '.wodt-admin-add-so').show();
 			loadDeparturesOnSelect();
+			loadArrivesOnSelect();
 		}
 
 		function setWidgetsForWodtCostAddedOrCanceled(){
@@ -215,7 +281,7 @@ function actions_data_render(data, type){
 				const wodtSetId = $(this).parent().parent().parent().attr('id');
 				const id = wodtSetId.split('-')[1];
 				const dpr = dttbl_costs.rows().data();
-				console.log('Orígenes de salida:');
+				console.log('Costos distancia:');
 				console.log(dpr);
 				for(i=0; dpr.length; i++){
 					if( dpr[i].DT_RowId.split('-')[1] == id ){
@@ -260,7 +326,9 @@ function actions_data_render(data, type){
 			switch(cost_editor_mode){
 				case 0:
 					wodtCostNewData = {
-						'cost': $('#wodt_cost').val(),
+						'departure_id': $('#wodt_origen').val(),
+						'arrive_id':	$('#wodt_destino').val(),
+						'cost': 		$('#wodt_cost').val()
 					};
 					ajxUrl = wodt_config.urlAddCost;
 					ajxMthd = 'POST';
@@ -268,6 +336,8 @@ function actions_data_render(data, type){
 
 				case 1:
 					wodtCostNewData = {
+						'departure_id': $('#wodt_origen').val(),
+						'arrive_id':	$('#wodt_destino').val(),
 						'cost': $('#wodt_cost').val(),
 						'cost_id': $('#wodt_cost_id').val()
 					};
